@@ -41,9 +41,9 @@ for member in club_members_list:
     for entry in battlelog:
         # not all entries have the key 'trophyChange', therefore the exception handling
         try:
-            # identify if the entry is a club league match
+            # identify if the entry is a club league game
             if entry['battle']['type'] == 'teamRanked' and entry['battle']['trophyChange'] in [3, 5, 7, 9]:
-                # only add the club league match if it has not been already added
+                # only add the club league game if it has not been already added
                 # up to 3 members can have the same entry in their battlelog if they played a club league game together
                 if entry['battleTime'] not in club_league_games_timestamps and entry['battleTime'] not in club_league_games_history_list:
                     club_league_games_timestamps.append(entry['battleTime'])

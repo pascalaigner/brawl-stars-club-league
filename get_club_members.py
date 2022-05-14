@@ -34,6 +34,8 @@ club_members_df = pd.DataFrame(
 
 engine = create_engine(URI, poolclass=NullPool)
 with engine.connect() as connection:
+    # the database table should only contain the latest list of members
+    # therefore, clear (truncate) the table before inserting the latest list of members
     connection.execute('TRUNCATE TABLE club_members')
     club_members_df.to_sql('club_members', connection, if_exists='append', index=False)
 

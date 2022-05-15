@@ -337,29 +337,58 @@ If one wanted to also track the non-final rounds, one would have to work with a 
 
 The script `get_club_members.py` retrieves the club members via the club members endpoint (`/clubs/{clubTag}/members`) and stores them in the database table `club_members`. Then, the script `get_club_league_games.py` iterates through all members in the table `club_members` and retrieves their Club League Power Matches via the battlelog endpoint (`/players/{playerTag}/battlelog`) and stores them in the database table `club_league_games`. As multiple club members can have the same Club League Power Matches in their battlelog, there is a duplication filter based on the Club League Power Match timestamp, so that only each unique Club League Power Match is stored in the table `club_league_games`.
 
+There is an argument whether one should store the raw JSON of a Club League Power Match in the table or pre-process it in a way which makes the data more human-readable. It was decided to pre-process the JSON and only store relevant data. This makes querying a lot easier for consuming applications.
+
 The table `club_members` looks as follows:
-| player_tag    | player_name   |
-| ------------- | ------------- |
-| '#9GQ2R82CC'  | 'Konni83'     |
-| '#PQ82UU20R'  | 'Masha'       |
-| '#9CCQRLY02'  | 'aegiman'     |
-| ...           | ...           |
+```
+CREATE TABLE club_members(
+    player_tag TEXT PRIMARY KEY,
+    player_name TEXT
+);
+```
 
 The table `club_league_games` looks as follows:
-| game_timestamp         | game_json                                                                                                         |
-| ---------------------- | ----------------------------------------------------------------------------------------------------------------- |
-| '20220508T202244.000Z' | '{"battleTime": "20220508T202244.000Z", "event": {"id": 15000306, "mode": "hotZone", "map": "Dueling Beetles"}... |
-| '20220508T202845.000Z' | '{"battleTime": "20220508T202845.000Z", "event": {"id": 15000306, "mode": "hotZone", "map": "Dueling Beetles"}... |
-| '20220508T203533.000Z' | '{"battleTime": "20220508T203533.000Z", "event": {"id": 15000026, "mode": "brawlBall", "map": "Pinhole Punt"}...  |
-| ...                    | ...                                                                                                               |
-
-There is an argument whether one should store the raw JSON of a Club League Power Match in the table or pre-process it in a way which makes the data more human-readable. It was decided to store the raw JSON in the table and leave any processing to the consuming application.
+```
+CREATE TABLE club_league_games(
+    game_timestamp TEXT PRIMARY KEY,
+    season TEXT,
+    event_day TEXT,
+    mode TEXT,
+    map TEXT,
+    result TEXT,
+    trophy_change INT,
+    player1_tag TEXT,
+    player1_name TEXT,
+    player1_brawler TEXT,
+    player1_is_club_member BOOLEAN,
+    player2_tag TEXT,
+    player2_name TEXT,
+    player2_brawler TEXT,
+    player2_is_club_member BOOLEAN,
+    player3_tag TEXT,
+    player3_name TEXT,
+    player3_brawler TEXT,
+    player3_is_club_member BOOLEAN,
+    player4_tag TEXT,
+    player4_name TEXT,
+    player4_brawler TEXT,
+    player4_is_club_member BOOLEAN,
+    player5_tag TEXT,
+    player5_name TEXT,
+    player5_brawler TEXT,
+    player5_is_club_member BOOLEAN,
+    player6_tag TEXT,
+    player6_name TEXT,
+    player6_brawler TEXT,
+    player6_is_club_member BOOLEAN
+);
+```
 
 An important point one has to be aware of is that the battlelog changes over time. Therefore, the script `get_club_league_games.py` has to run regularly to catch all Club League Power Matches. An example schedule could look as follows:
 
 1. Run the script `get_club_members.py` shortly before a Club League season starts to get the latest club member list.
 2. Run the script `get_club_league_games.py` multiple times during the Club League season to catch all Club League Power Matches. The duplication filter prevents that the same Club League Power Match gets stored multiple times.
 
-As a free cloud-hosted database I can recommend the PostgreSQL Hobby Dev plan on Heroku (https://elements.heroku.com/addons/heroku-postgresql). With up to 10'000 rows and 1 GB of storage you can store plenty of Club League Power Matches data. Also, as it is cloud-hosted, the data can be accessed from anywhere.
+As a free cloud-hosted database I can recommend the PostgreSQL Hobby Dev plan on Heroku (https://elements.heroku.com/addons/heroku-postgresql). With up to 10'000 rows and 1 GB of storage one can store plenty of Club League Power Matches data. Also, as it is cloud-hosted, the data can be accessed from anywhere.
 
 The next step is to automate the execution of the scripts on Heroku so that the data collecting runs 24/7 without manual intervention. Further, a consuming application will be built to visualize the collected data and draw insights from it.

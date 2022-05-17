@@ -1,10 +1,8 @@
 from datetime import datetime
 
-# club league event days start on Wednesday, Friday and Sunday on 14:00 UTC each week (season)
-
 def get_season(date_str):
     date = datetime.strptime(date_str, '%Y%m%dT%H%M%S.%f%z')
-    if date.weekday() in [*range(2, 7)]:
+    if date.weekday() in list(range(2, 7)):
         return f'{date.year}-{date.isocalendar().week}'
     elif date.weekday() == 0:
         return f'{date.year}-{date.isocalendar().week-1}'

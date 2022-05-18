@@ -1,4 +1,7 @@
 CREATE TABLE club_members(
-    player_tag TEXT PRIMARY KEY,
-    player_name TEXT
+    id BIGSERIAL PRIMARY KEY,
+    season TEXT,
+    player_tag TEXT,
+    player_name TEXT,
+    trophies INT
 );

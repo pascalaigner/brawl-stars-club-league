@@ -10,7 +10,9 @@ API_TOKEN=config('API_TOKEN')
 FIXIE_URL=config('FIXIE_URL')
 URI=config('URI')
 
-if datetime.utcnow().weekday() == 2:
+date = datetime.utcnow()
+
+if date.weekday() == 2:
 
     club_tag = '#2YPY9LVV9'
     headers = {
@@ -30,19 +32,18 @@ if datetime.utcnow().weekday() == 2:
     club_members_list = response.json()['items']
     club_members_df = pd.DataFrame(
         {
+            'season' : [f'{date.year}-{date.isocalendar().week}'] * len(club_members_list),
             'player_tag'  : [member['tag'] for member in club_members_list],
             'player_name' : [member['name'] for member in club_members_list],
+            'trophies' : [member['trophies'] for member in club_members_list],
         },
     )
-
+    
     engine = create_engine(URI, poolclass=NullPool)
     with engine.connect() as connection:
-        # the database table should only contain the latest list of club members
-        # therefore, clear (truncate) the table before inserting the latest list of members
-        connection.execute('TRUNCATE TABLE club_members')
         club_members_df.to_sql('club_members', connection, if_exists='append', index=False)
         connection.execute(f''' INSERT INTO job_log (job_timestamp, job)
-                                VALUES('{datetime.utcnow()}', 'get_club_members.py'); ''')
+                                VALUES('{date}', 'get_club_members.py'); ''')
 
     print('Script get_club_members.py executed successfully.')
 

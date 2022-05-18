@@ -12,7 +12,9 @@ API_TOKEN=config('API_TOKEN')
 FIXIE_URL=config('FIXIE_URL')
 URI=config('URI')
 
-if datetime.utcnow().weekday() in [3, 5, 0]:
+date = datetime.utcnow()
+
+if date.weekday() in [3, 5, 0]:
 
     headers = {
         'Authorization' : f'Bearer {API_TOKEN}',
@@ -170,7 +172,7 @@ if datetime.utcnow().weekday() in [3, 5, 0]:
     with engine.connect() as connection:
         club_league_games_new_df.to_sql('club_league_games', connection, if_exists='append', index=False)
         connection.execute(f''' INSERT INTO job_log (job_timestamp, job)
-                                VALUES('{datetime.utcnow()}', 'get_club_league_games.py'); ''')
+                                VALUES('{date}', 'get_club_league_games.py'); ''')
 
     print('Script get_club_league_games.py executed successfully.')
 

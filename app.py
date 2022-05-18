@@ -1,5 +1,5 @@
 import dash
-import dash_html_components as html
+from dash import html
 import dash_bootstrap_components as dbc
 from decouple import config
 import pandas as pd
@@ -16,7 +16,7 @@ server = app.server
 
 engine = create_engine(URI, poolclass=NullPool)
 with engine.connect() as connection:
-    club_league_games_history_df = pd.read_sql('club_league_games', engine)
+    club_league_games_history_df = pd.read_sql('club_league_games', connection)
 
 prettier_timestamps = []
 for date_str in club_league_games_history_df['game_timestamp']:
@@ -58,4 +58,4 @@ app.layout = dbc.Container(
 )
 
 if __name__ == '__main__':
-    app.run_server(debug=False)
+    app.run_server(debug=True)

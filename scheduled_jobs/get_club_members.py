@@ -33,7 +33,7 @@ if date.weekday() == 2:
     club_members_df = pd.DataFrame(
         {
             'season' : [f'{date.year}-{date.isocalendar().week}'] * len(club_members_list),
-            'player_tag'  : [member['tag'] for member in club_members_list],
+            'player_tag' : [member['tag'] for member in club_members_list],
             'player_name' : [member['name'] for member in club_members_list],
             'trophies' : [member['trophies'] for member in club_members_list],
         },

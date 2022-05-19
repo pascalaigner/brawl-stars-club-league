@@ -1,0 +1,21 @@
+th {
+  padding: 16px 8px !important;
+}
+
+td {
+  padding: 8px !important;
+}
+
+.selector_label {
+  padding-right: 5px;
+}
+
+#season_selector {
+  margin-right: 30px;
+  width: 95.273px; /* equal to width of #select_event_day */
+}
+
+#season_overview_table {
+  max-height: 500px;
+  overflow: auto;
+}

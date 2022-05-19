@@ -129,7 +129,7 @@ if date.weekday() in [3, 5, 0]:
 
     club_league_games_new_df = pd.DataFrame(
         {
-            'game_timestamp'  : timestamps,
+            'game_timestamp' : timestamps,
             'season' : seasons,
             'event_day' : event_days,
             'mode' : modes,

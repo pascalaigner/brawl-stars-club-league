@@ -26,8 +26,10 @@ if date.weekday() in [3, 5, 0]:
 
     engine = create_engine(URI, poolclass=NullPool)
     with engine.connect() as connection:
-        club_members_list = pd.read_sql('club_members', connection)['player_tag'].to_list()
-        club_league_games_list = pd.read_sql('club_league_games', connection)['game_timestamp'].to_list()
+        club_members_df = pd.read_sql('club_members', connection)
+        club_members_list = club_members_df['player_tag'].to_list()
+        club_league_games_df = pd.read_sql('club_league_games', connection)
+        club_league_games_list = club_league_games_df['game_timestamp'].to_list()
 
     timestamps = []
     seasons = []
@@ -80,11 +82,15 @@ if date.weekday() in [3, 5, 0]:
         for entry in battlelog:
 
             # identify if the entry is a club league game
-            if 'trophyChange' in entry['battle'] and entry['battle']['type'] == 'teamRanked' and entry['battle']['trophyChange'] in [3, 5, 7, 9]:
+            if ('trophyChange' in entry['battle'] and
+                    entry['battle']['type'] == 'teamRanked' and
+                    entry['battle']['trophyChange'] in [3, 5, 7, 9]):
 
                 # only add the club league game if it has not been already added
-                # up to 3 members can have the same entry in their battlelog if they played a club league game together
-                if entry['battleTime'] not in timestamps and entry['battleTime'] not in club_league_games_list:
+                # up to 3 members can have the same entry in their battlelog
+                # if they played a club league game together
+                if (entry['battleTime'] not in timestamps and
+                        entry['battleTime'] not in club_league_games_list):
 
                     timestamps.append(entry['battleTime'])
                     seasons.append(get_season(entry['battleTime']))
@@ -170,7 +176,12 @@ if date.weekday() in [3, 5, 0]:
     )
 
     with engine.connect() as connection:
-        club_league_games_new_df.to_sql('club_league_games', connection, if_exists='append', index=False)
+        club_league_games_new_df.to_sql(
+            'club_league_games',
+            connection,
+            if_exists='append',
+            index=False
+        )
         connection.execute(f''' INSERT INTO job_log (job_timestamp, job)
                                 VALUES('{date}', 'get_club_league_games.py'); ''')
 

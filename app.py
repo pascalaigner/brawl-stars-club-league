@@ -49,12 +49,12 @@ def serve_layout():
                             [
                                 html.H5('Seasons Overview'),
                                 html.Span('Season', className='selector_label'),
-                                dbc.Select(
+                                dbc.Label(
                                     id='season_selector',
                                     options=seasons,
                                     value=seasons[0]['value'],
                                 ),
-                                html.Span('Event day', className='selector_label'),
+                                dbc.Label('Event day', className='selector_label'),
                                 dbc.Select(
                                     id='event_day_selector',
                                     options=[
@@ -66,14 +66,14 @@ def serve_layout():
                                     value='all',
                                 ),
                                 html.Div(style={'height' : '15px'}),
-                                html.Span('Total club trophies'),
+                                dbc.Label('Total club trophies'),
                                 dbc.Progress(
                                     id='total_club_trophies_progress_bar',
                                     label=total_club_trophies,
                                     value=calculate_progress_bar_value(total_club_trophies),
                                 ),
                                 html.Div(style={'height' : '15px'}),
-                                html.Span('Total tickets used'),
+                                dbc.Label('Total tickets used'),
                                 dbc.Progress(
                                     id='total_tickets_used_progress_bar',
                                     label=total_tickets_used,

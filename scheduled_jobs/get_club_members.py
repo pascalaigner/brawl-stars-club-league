@@ -28,11 +28,12 @@ if date.weekday() == 2:
         headers=headers,
         proxies=proxies,
     )
-
     club_members_list = response.json()['items']
+    
+    season = f'{date.year}-{date.isocalendar().week}'
     club_members_df = pd.DataFrame(
         {
-            'season' : [f'{date.year}-{date.isocalendar().week}'] * len(club_members_list),
+            'season' : [season] * len(club_members_list),
             'player_tag' : [member['tag'] for member in club_members_list],
             'player_name' : [member['name'] for member in club_members_list],
             'trophies' : [member['trophies'] for member in club_members_list],
@@ -41,7 +42,12 @@ if date.weekday() == 2:
     
     engine = create_engine(URI, poolclass=NullPool)
     with engine.connect() as connection:
-        club_members_df.to_sql('club_members', connection, if_exists='append', index=False)
+        club_members_df.to_sql(
+            'club_members',
+            connection,
+            if_exists='append',
+            index=False
+        )
         connection.execute(f''' INSERT INTO job_log (job_timestamp, job)
                                 VALUES('{date}', 'get_club_members.py'); ''')
 

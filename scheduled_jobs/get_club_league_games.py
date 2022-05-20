@@ -14,7 +14,7 @@ URI=config('URI')
 
 date = datetime.utcnow()
 
-if date.weekday() in [3, 4, 5, 0]:
+if date.weekday() in [3, 5, 0]:
 
     headers = {
         'Authorization' : f'Bearer {API_TOKEN}',

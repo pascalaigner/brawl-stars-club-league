@@ -9,7 +9,7 @@ from sqlalchemy.pool import NullPool
 from auxiliary_functions import get_season, get_event_day
 
 API_TOKEN=config('API_TOKEN')
-FIXIE_URL=config('FIXIE_URL1')
+FIXIE_URL=config('FIXIE_URL')
 URI=config('URI')
 
 date = datetime.utcnow()

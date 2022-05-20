@@ -9,12 +9,18 @@ from sqlalchemy.pool import NullPool
 from auxiliary_functions import get_season, get_event_day
 
 API_TOKEN=config('API_TOKEN')
-FIXIE_URL=config('FIXIE_URL')
 URI=config('URI')
 
+execute_script = False
 date = datetime.utcnow()
 
-if date.weekday() in [3, 5, 0]:
+if date.hour == 11:
+    FIXIE_URL=config('FIXIE_URL2')
+    execute_script = True
+
+# date.weekday() in [3, 5, 0]
+
+if execute_script:
 
     headers = {
         'Authorization' : f'Bearer {API_TOKEN}',

@@ -7,7 +7,7 @@ from sqlalchemy import create_engine
 from sqlalchemy.pool import NullPool
 
 API_TOKEN=config('API_TOKEN')
-FIXIE_URL=config('FIXIE_URL')
+FIXIE_URL=config('FIXIE_URL1')
 URI=config('URI')
 
 date = datetime.utcnow()

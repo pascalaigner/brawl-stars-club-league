@@ -5,9 +5,12 @@ def get_season_overview(club_members_df, club_league_games_df, season, event_day
     if event_day == 'all':
         club_league_games_df_filtered = club_league_games_df.query(f'season == "{season}"')
     else:
-        club_league_games_df_filtered = club_league_games_df.query(f'season == "{season}" & event_day == "{event_day}"')
+        club_league_games_df_filtered = club_league_games_df.query(f'season == "{season}" & \
+                                                                     event_day == "{event_day}"')
 
-    season_overview_dict = {member['player_name'] : [0, 0, member['trophies']] for member_index, member in club_members_df_filtered.iterrows()}
+    season_overview_dict = {member['player_name'] : [0, 0, member['trophies']]
+                            for member_index, member in club_members_df_filtered.iterrows()}
+    
     for game_index, game in club_league_games_df_filtered.iterrows():
         for n in range(1, 7):
             if game[f'player{n}_is_club_member'] == True:
@@ -22,21 +25,6 @@ def get_season_overview(club_members_df, club_league_games_df, season, event_day
             'Trophies' : [season_overview_dict[player][2] for player in season_overview_dict],
         },
     )
-    season_overview_df_sorted = season_overview_df.sort_values(['Club trophies', 'Trophies'], ascending=False)[['Player', 'Club trophies', 'Tickets used']]
+    season_overview_df_sorted = season_overview_df.sort_values(['Club trophies', 'Trophies'], ascending=False)
 
-    if event_day == 'all':
-        max_club_trophies = 1890
-        max_tickets_used = 420
-    elif event_day in ['1', '2']:
-        max_club_trophies = 540
-        max_tickets_used = 120
-    else:
-        max_club_trophies = 810
-        max_tickets_used = 180
-
-    total_club_trophies = season_overview_df_sorted['Club trophies'].sum()
-    total_club_trophies_str = f'{total_club_trophies}/{max_club_trophies}'
-    total_tickets_used = season_overview_df_sorted['Tickets used'].sum()
-    total_tickets_used_str = f'{total_tickets_used}/{max_tickets_used}'
-
-    return season_overview_df_sorted, total_club_trophies_str, total_tickets_used_str
+    return season_overview_df_sorted[['Player', 'Club trophies', 'Tickets used']]

@@ -1,12 +1,12 @@
 from dash import Dash, dcc, html
-from dash.dependencies import Input, Output
 import dash_bootstrap_components as dbc
 from decouple import config
 import pandas as pd
 from sqlalchemy import create_engine
 from sqlalchemy.pool import NullPool
 
-from stats_functions.get_season_overview import get_season_overview
+from callbacks.callback_render_season_overview import callback_render_season_overview
+from layout.serve_column_season_overview import serve_column_season_overview
 
 URI=config('URI')
 
@@ -24,9 +24,6 @@ app = Dash(
 app.title = 'Brawl Attack'
 server = app.server
 
-def calculate_progress_bar_value(progress):
-    return int(progress.split('/')[0]) / int(progress.split('/')[1])*100
-
 def serve_layout():
     
     engine = create_engine(URI, poolclass=NullPool)
@@ -34,9 +31,6 @@ def serve_layout():
         club_members_df = pd.read_sql('club_members', connection)
         club_league_games_df = pd.read_sql('club_league_games', connection)
         # job_log_df = pd.read_sql('job_log', connection)
-
-    seasons = [{'label' : season, 'value': season} for season in club_members_df['season'].unique()]
-    season_overview_df, total_club_trophies, total_tickets_used = get_season_overview(club_members_df, club_league_games_df, seasons[0]['value'], 'all')
 
     return (
         dbc.Container(
@@ -54,55 +48,9 @@ def serve_layout():
                 ),
                 dbc.Row(
                     [
-                        dbc.Col(
-                            [
-                                html.H5('Seasons Overview'),
-                                html.Div(
-                                    [
-                                        dbc.Label('Season', class_name='selector_label'),
-                                        dbc.Select(
-                                            id='season_selector',
-                                            class_name='selector',
-                                            options=seasons,
-                                            value=seasons[0]['value'],
-                                        ),
-                                    ],
-                                ),
-                                html.Div(
-                                    [
-                                        dbc.Label('Event day', class_name='selector_label'),
-                                        dbc.Select(
-                                            id='event_day_selector',
-                                            class_name='selector',
-                                            options=[
-                                                {'label' : 'All', 'value' : 'all'},
-                                                {'label' : 'Event day 1', 'value' : '1'},
-                                                {'label' : 'Event day 2', 'value' : '2'},
-                                                {'label' : 'Event day 3', 'value' : '3'},
-                                            ],
-                                            value='all',
-                                        ),
-                                    ],
-                                ),
-                                html.Div(style={'height' : '15px'}),
-                                dbc.Label('Total club trophies'),
-                                dbc.Progress(
-                                    id='total_club_trophies_progress_bar',
-                                    label=total_club_trophies,
-                                    value=calculate_progress_bar_value(total_club_trophies),
-                                ),
-                                dbc.Label('Total tickets used'),
-                                dbc.Progress(
-                                    id='total_tickets_used_progress_bar',
-                                    label=total_tickets_used,
-                                    value=calculate_progress_bar_value(total_tickets_used),
-                                ),
-                                html.Div(style={'height' : '15px'}),
-                                html.Div(
-                                    dbc.Table.from_dataframe(season_overview_df),
-                                    id='season_overview_table',
-                                ),
-                            ],
+                        serve_column_season_overview(
+                            club_members_df,
+                            club_league_games_df,
                         ),
                         dbc.Col([html.H5('Win Rates (coming soon...)')]),
                         dbc.Col([html.H5('More fancy stuff...')]),
@@ -127,26 +75,7 @@ def serve_layout():
 
 app.layout = serve_layout
 
-@app.callback(
-    Output(component_id='total_club_trophies_progress_bar', component_property='label'),
-    Output(component_id='total_club_trophies_progress_bar', component_property='value'),
-    Output(component_id='total_tickets_used_progress_bar', component_property='label'),
-    Output(component_id='total_tickets_used_progress_bar', component_property='value'),
-    Output(component_id='season_overview_table', component_property='children'),
-    Input(component_id='season_selector', component_property='value'),
-    Input(component_id='event_day_selector', component_property='value'),
-    Input(component_id='club_members_df_memory', component_property='data'),
-    Input(component_id='club_league_games_df_memory', component_property='data'),
-)
-def render_season_overview(selected_season, selected_event_day, club_members_df, club_league_games_df):
-    season_overview_df, total_club_trophies, total_tickets_used = get_season_overview(pd.DataFrame.from_dict(club_members_df), pd.DataFrame.from_dict(club_league_games_df), selected_season, selected_event_day)
-    return (
-        total_club_trophies,
-        calculate_progress_bar_value(total_club_trophies),
-        total_tickets_used,
-        calculate_progress_bar_value(total_tickets_used),
-        dbc.Table.from_dataframe(season_overview_df)
-    )
+callback_render_season_overview(app)
 
 if __name__ == '__main__':
     app.run_server(debug=True)

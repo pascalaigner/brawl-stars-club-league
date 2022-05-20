@@ -86,9 +86,7 @@ if date.weekday() in [3, 5, 0]:
                     entry['battle']['type'] == 'teamRanked' and
                     entry['battle']['trophyChange'] in [3, 5, 7, 9]):
 
-                # only add the club league game if it has not been already added
-                # up to 3 members can have the same entry in their battlelog
-                # if they played a club league game together
+                # only add the club league game if it has not been added already
                 if (entry['battleTime'] not in timestamps and
                         entry['battleTime'] not in club_league_games_list):
 
@@ -118,7 +116,7 @@ if date.weekday() in [3, 5, 0]:
                     players4_tags.append(entry['battle']['teams'][1][0]['tag'])
                     players4_names.append(entry['battle']['teams'][1][0]['name'])
                     players4_brawlers.append(entry['battle']['teams'][1][0]['brawler']['name'])
-                    players4_are_club_members .append(True if players4_tags[-1] in club_members_list else False)
+                    players4_are_club_members.append(True if players4_tags[-1] in club_members_list else False)
 
                     players5_tags.append(entry['battle']['teams'][1][1]['tag'])
                     players5_names.append(entry['battle']['teams'][1][1]['name'])
@@ -182,8 +180,10 @@ if date.weekday() in [3, 5, 0]:
             if_exists='append',
             index=False
         )
-        connection.execute(f''' INSERT INTO job_log (job_timestamp, job)
-                                VALUES('{date}', 'get_club_league_games.py'); ''')
+        connection.execute(
+            f''' INSERT INTO job_log (job_timestamp, job)
+                 VALUES('{date}', 'get_club_league_games.py'); '''
+        )
 
     print('Script get_club_league_games.py executed successfully.')
 

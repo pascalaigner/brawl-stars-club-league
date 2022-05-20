@@ -48,8 +48,10 @@ if date.weekday() == 2:
             if_exists='append',
             index=False
         )
-        connection.execute(f''' INSERT INTO job_log (job_timestamp, job)
-                                VALUES('{date}', 'get_club_members.py'); ''')
+        connection.execute(
+            f''' INSERT INTO job_log (job_timestamp, job)
+                 VALUES('{date}', 'get_club_members.py'); '''
+        )
 
     print('Script get_club_members.py executed successfully.')
 

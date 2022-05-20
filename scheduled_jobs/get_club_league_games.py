@@ -9,18 +9,12 @@ from sqlalchemy.pool import NullPool
 from auxiliary_functions import get_season, get_event_day
 
 API_TOKEN=config('API_TOKEN')
+FIXIE_URL=config('FIXIE_URL1')
 URI=config('URI')
 
-execute_script = False
 date = datetime.utcnow()
 
-if date.hour in [11, 12]:
-    FIXIE_URL=config('FIXIE_URL1')
-    execute_script = True
-
-# date.weekday() in [3, 5, 0]
-
-if execute_script:
+if date.weekday() in [3, 4, 5, 0]:
 
     headers = {
         'Authorization' : f'Bearer {API_TOKEN}',
@@ -83,7 +77,6 @@ if execute_script:
             headers=headers,
             proxies=proxies,
         )
-        print(response)
         battlelog = response.json()['items']
 
         for entry in battlelog:

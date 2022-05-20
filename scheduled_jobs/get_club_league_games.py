@@ -15,7 +15,7 @@ execute_script = False
 date = datetime.utcnow()
 
 if date.hour in [11, 12]:
-    FIXIE_URL=config('FIXIE_URL2')
+    FIXIE_URL=config('FIXIE_URL1')
     execute_script = True
 
 # date.weekday() in [3, 5, 0]

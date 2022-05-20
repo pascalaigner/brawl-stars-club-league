@@ -11,7 +11,16 @@ from stats_functions.get_season_overview import get_season_overview
 URI=config('URI')
 
 BS = 'https://cdn.jsdelivr.net/npm/bootswatch@4.5.2/dist/lux/bootstrap.min.css'
-app = Dash(__name__, external_stylesheets=[BS])
+app = Dash(
+    __name__,
+    external_stylesheets=[BS],
+    meta_tags=[
+        {
+            'name' : 'viewport',
+            'content' : 'width=device-width, initial-scale=1',
+        },
+    ],
+)
 app.title = 'Brawl Attack'
 server = app.server
 
@@ -40,7 +49,7 @@ def serve_layout():
                             href='https://brawlify.com/stats/club/2YPY9LVV9',
                             target='_blank',
                         ),
-                        ') Club League Stats',
+                        ')',
                     ],
                 ),
                 dbc.Row(
@@ -48,22 +57,32 @@ def serve_layout():
                         dbc.Col(
                             [
                                 html.H5('Seasons Overview'),
-                                html.Span('Season', className='selector_label'),
-                                dbc.Label(
-                                    id='season_selector',
-                                    options=seasons,
-                                    value=seasons[0]['value'],
-                                ),
-                                dbc.Label('Event day', className='selector_label'),
-                                dbc.Select(
-                                    id='event_day_selector',
-                                    options=[
-                                        {'label' : 'All', 'value' : 'all'},
-                                        {'label' : 'Event day 1', 'value' : '1'},
-                                        {'label' : 'Event day 2', 'value' : '2'},
-                                        {'label' : 'Event day 3', 'value' : '3'},
+                                html.Div(
+                                    [
+                                        dbc.Label('Season', class_name='selector_label'),
+                                        dbc.Select(
+                                            id='season_selector',
+                                            class_name='selector',
+                                            options=seasons,
+                                            value=seasons[0]['value'],
+                                        ),
                                     ],
-                                    value='all',
+                                ),
+                                html.Div(
+                                    [
+                                        dbc.Label('Event day', class_name='selector_label'),
+                                        dbc.Select(
+                                            id='event_day_selector',
+                                            class_name='selector',
+                                            options=[
+                                                {'label' : 'All', 'value' : 'all'},
+                                                {'label' : 'Event day 1', 'value' : '1'},
+                                                {'label' : 'Event day 2', 'value' : '2'},
+                                                {'label' : 'Event day 3', 'value' : '3'},
+                                            ],
+                                            value='all',
+                                        ),
+                                    ],
                                 ),
                                 html.Div(style={'height' : '15px'}),
                                 dbc.Label('Total club trophies'),
@@ -72,7 +91,6 @@ def serve_layout():
                                     label=total_club_trophies,
                                     value=calculate_progress_bar_value(total_club_trophies),
                                 ),
-                                html.Div(style={'height' : '15px'}),
                                 dbc.Label('Total tickets used'),
                                 dbc.Progress(
                                     id='total_tickets_used_progress_bar',
@@ -131,4 +149,4 @@ def render_season_overview(selected_season, selected_event_day, club_members_df,
     )
 
 if __name__ == '__main__':
-    app.run_server(debug=False)
+    app.run_server(debug=True)

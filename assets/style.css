@@ -6,13 +6,17 @@ td {
   padding: 8px !important;
 }
 
-.selector_label {
-  padding-right: 5px;
+.form-label, .progress {
+  margin-bottom: 5px;
 }
 
-#season_selector {
-  margin-right: 30px;
-  width: 95.273px; /* equal to width of #select_event_day */
+.selector_label {
+  margin-right: 5px;
+  width: 70.761px; /* minimal width which 'Event day' label requires  */
+}
+
+.selector {
+  width: 97.273px; /* minimal width which 'Event day' selector requires */
 }
 
 #season_overview_table {

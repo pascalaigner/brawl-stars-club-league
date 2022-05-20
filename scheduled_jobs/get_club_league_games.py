@@ -14,7 +14,7 @@ URI=config('URI')
 execute_script = False
 date = datetime.utcnow()
 
-if date.hour == 11:
+if date.hour in [11, 12]:
     FIXIE_URL=config('FIXIE_URL2')
     execute_script = True
 
@@ -83,6 +83,7 @@ if execute_script:
             headers=headers,
             proxies=proxies,
         )
+        print(response)
         battlelog = response.json()['items']
 
         for entry in battlelog:

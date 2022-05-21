@@ -61,6 +61,6 @@ def serve_column_season_overview(club_members_df, club_league_games_df):
                     id='season_overview_table',
                 ),
             ],
-            width=4,
+            lg=4, width=12,
         )
     )

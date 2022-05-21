@@ -40,6 +40,7 @@ def serve_layout():
                 html.Th("Event day"),
                 html.Th("Result"),
                 html.Th("Mode"),
+                html.Th("Map"),
                 html.Th("Club team names"),
                 html.Th("Club team brawlers"),
                 html.Th("Opponents brawlers"),
@@ -86,6 +87,11 @@ def serve_layout():
                     html.Td(
                         html.Img(src=app.get_asset_url(f'modes/{game["mode"]}.webp'), height='30px'),
                     ),
+                    html.Td(html.A(
+                        game['map'],
+                        href=f'https://brawlify.com/maps/detail/{game["map"].replace(" ", "-")}',
+                        target='_blank',)
+                    ),
                     html.Td(
                         [
                             html.Div(club_team_names[0]),
@@ -95,16 +101,16 @@ def serve_layout():
                     ),
                     html.Td(
                         [
-                            html.Img(src=app.get_asset_url(f'brawler_icons/{club_team_brawlers[0]}.webp'), height='30px'),
-                            html.Img(src=app.get_asset_url(f'brawler_icons/{club_team_brawlers[1]}.webp'), height='30px'),
-                            html.Img(src=app.get_asset_url(f'brawler_icons/{club_team_brawlers[2]}.webp'), height='30px'),
+                            html.Img(src=app.get_asset_url(f'brawler_icons/{club_team_brawlers[0]}.webp'), height='40px'),
+                            html.Img(src=app.get_asset_url(f'brawler_icons/{club_team_brawlers[1]}.webp'), height='40px'),
+                            html.Img(src=app.get_asset_url(f'brawler_icons/{club_team_brawlers[2]}.webp'), height='40px'),
                         ], 
                     ),
                     html.Td(
                         [
-                            html.Img(src=app.get_asset_url(f'brawler_icons/{opponents_brawlers[0]}.webp'), height='30px'),
-                            html.Img(src=app.get_asset_url(f'brawler_icons/{opponents_brawlers[1]}.webp'), height='30px'),
-                            html.Img(src=app.get_asset_url(f'brawler_icons/{opponents_brawlers[2]}.webp'), height='30px'),
+                            html.Img(src=app.get_asset_url(f'brawler_icons/{opponents_brawlers[0]}.webp'), height='40px'),
+                            html.Img(src=app.get_asset_url(f'brawler_icons/{opponents_brawlers[1]}.webp'), height='40px'),
+                            html.Img(src=app.get_asset_url(f'brawler_icons/{opponents_brawlers[2]}.webp'), height='40px'),
                         ], 
                     ),
                 ],
@@ -141,7 +147,7 @@ def serve_layout():
                                 html.H5('Matchups'),
                                 table,
                             ],
-                            width=8,
+                            lg=8, width=12,
                         ),
                     ],
                 ),

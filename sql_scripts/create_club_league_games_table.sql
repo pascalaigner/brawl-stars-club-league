@@ -4,6 +4,7 @@ CREATE TABLE club_league_games(
     event_day TEXT,
     mode TEXT,
     map TEXT,
+    game_type TEXT,
     result TEXT,
     trophy_change INT,
     

@@ -13,9 +13,9 @@ def get_season_overview(club_members_df, club_league_games_df, season, event_day
     
     for game_index, game in club_league_games_df_filtered.iterrows():
         for n in range(1, 7):
-            if game[f'player{n}_is_club_member'] == True:
+            if game[f'player{n}_is_club_member']:
                 season_overview_dict[game[f'player{n}_name']][0] += game['trophy_change']
-                season_overview_dict[game[f'player{n}_name']][1] += 2
+                season_overview_dict[game[f'player{n}_name']][1] += 2 if game['game_type'] == 'teamRanked' else 1
 
     season_overview_df = pd.DataFrame(
         {

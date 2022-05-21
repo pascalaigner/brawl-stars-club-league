@@ -30,12 +30,15 @@ if date.weekday() in [3, 5, 0]:
         club_members_list = club_members_df['player_tag'].to_list()
         club_league_games_df = pd.read_sql('club_league_games', connection)
         club_league_games_list = club_league_games_df['game_timestamp'].to_list()
+        
+    mode_pool = ['gemGrab', 'heist', 'bounty', 'brawlBall', 'hotZone', 'knockout']
 
-    timestamps = []
+    game_timestamps = []
     seasons = []
     event_days = []
     modes = []
     maps = []
+    game_types = []
     results = []
     trophy_changes = []
 
@@ -80,21 +83,25 @@ if date.weekday() in [3, 5, 0]:
         battlelog = response.json()['items']
 
         for entry in battlelog:
-
+        
             # identify if the entry is a club league game
             if ('trophyChange' in entry['battle'] and
-                    entry['battle']['type'] == 'teamRanked' and
-                    entry['battle']['trophyChange'] in [3, 5, 7, 9]):
+                    (entry['battle']['type'] == 'teamRanked' and
+                     entry['battle']['trophyChange'] in [3, 5, 7, 9] or
+                     entry['battle']['type'] == 'ranked' and
+                     entry['event']['mode'] in mode_pool and
+                     entry['battle']['trophyChange'] in [1, 2, 3, 4])):
 
                 # only add the club league game if it has not been added already
-                if (entry['battleTime'] not in timestamps and
+                if (entry['battleTime'] not in game_timestamps and
                         entry['battleTime'] not in club_league_games_list):
 
-                    timestamps.append(entry['battleTime'])
+                    game_timestamps.append(entry['battleTime'])
                     seasons.append(get_season(entry['battleTime']))
                     event_days.append(get_event_day(entry['battleTime']))
                     modes.append(entry['event']['mode'])
                     maps.append(entry['event']['map'])
+                    game_types.append(entry['battle']['type'])
                     results.append(entry['battle']['result'])
                     trophy_changes.append(entry['battle']['trophyChange'])
 
@@ -133,11 +140,12 @@ if date.weekday() in [3, 5, 0]:
 
     club_league_games_new_df = pd.DataFrame(
         {
-            'game_timestamp' : timestamps,
+            'game_timestamp' : game_timestamps,
             'season' : seasons,
             'event_day' : event_days,
             'mode' : modes,
             'map' : maps,
+            'game_type' : game_types,
             'result' : results,
             'trophy_change' : trophy_changes,
 

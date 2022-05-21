@@ -89,7 +89,7 @@ def serve_layout():
                     ),
                     html.Td(html.A(
                         game['map'],
-                        href=f'https://brawlify.com/maps/detail/{game["map"].replace(" ", "-")}',
+                        href=f"""https://brawlify.com/maps/detail/{game["map"].replace(" ", "-").replace("'", "")}""",
                         target='_blank',)
                     ),
                     html.Td(

@@ -11,12 +11,12 @@ td {
 }
 
 .selector_label {
-  margin-right: 10px;
+  margin-right: 5px;
   width: 70.761px; /* minimal width which 'Event day' label requires  */
 }
 
 .selector {
-  width: 110px;
+  width: 78.400px;
 }
 
 #season_overview_table {

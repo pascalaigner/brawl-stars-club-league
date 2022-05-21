@@ -32,17 +32,89 @@ def serve_layout():
         club_league_games_df = pd.read_sql('club_league_games', connection)
         # job_log_df = pd.read_sql('job_log', connection)
 
+
     table_header = [
-        html.Thead(html.Tr([html.Th("First Name"), html.Th("Last Name")]))
+        html.Thead(html.Tr(
+            [
+                html.Th("Season"),
+                html.Th("Event day"),
+                html.Th("Result"),
+                html.Th("Mode"),
+                html.Th("Club team names"),
+                html.Th("Club team brawlers"),
+                html.Th("Opponents brawlers"),
+            ]
+        ))
     ]
 
-    row1 = html.Tr([html.Td(html.Img(src=app.get_asset_url('brawler_images/Shelly_Skin-Default.webp'), height='50px'),), html.Td(html.Img(src=app.get_asset_url('brawler_images/Amber_Skin-Default.webp'), width='50px'),)])
-    row2 = html.Tr([html.Td([html.Img(src=app.get_asset_url('brawler_images/Jessie_Skin-Default.webp'), height='50px'),html.Img(src=app.get_asset_url('brawler_images/Shelly_Skin-Default.webp'), height='50px')]), html.Td(html.Img(src=app.get_asset_url('brawler_images/Amber_Skin-Default.webp'), width='30px'),)])
-    row3 = html.Tr([html.Td([html.Img(src=app.get_asset_url('brawler_images/Rosa_Skin-Default.webp'), height='50px'),html.Img(src=app.get_asset_url('brawler_images/Shelly_Skin-Default.webp'), height='50px')]), html.Td(html.Img(src=app.get_asset_url('brawler_images/Amber_Skin-Default.webp'), width='30px'),)])
+    rows = []
 
-    table_body = [html.Tbody([row1, row2, row3])]
+    for game_index, game in club_league_games_df.sort_values('game_timestamp', ascending=False).iterrows():
+
+        team1_names = []
+        team1_brawlers = []
+        team1_are_club_members = False
+        team2_names = []
+        team2_brawlers = []
+
+        for n in range(1, 4):
+            team1_names.append(game[f'player{n}_name'])
+            team1_brawlers.append(game[f'player{n}_brawler'])
+            if game[f'player{n}_is_club_member']:
+                team1_are_club_members = True
+        
+        for n in range(4, 7):
+            team2_names.append(game[f'player{n}_name'])
+            team2_brawlers.append(game[f'player{n}_brawler'])
+
+        if team1_are_club_members:
+            club_team_names = team1_names
+            club_team_brawlers = team1_brawlers
+            opponents_brawlers = team2_brawlers
+        else:
+            club_team_names = team2_names
+            club_team_brawlers = team2_brawlers
+            opponents_brawlers = team1_brawlers
+
+
+        rows.append(
+            html.Tr(
+                [
+                    html.Td(game['season']),
+                    html.Td(game['event_day']),
+                    html.Td(game['result'], style={'color' : f'{"green" if game["result"] == "victory" else "red"}'}),
+                    html.Td(
+                        html.Img(src=app.get_asset_url(f'modes/{game["mode"]}.webp'), height='30px'),
+                    ),
+                    html.Td(
+                        [
+                            html.Div(club_team_names[0]),
+                            html.Div(club_team_names[1]),
+                            html.Div(club_team_names[2]),
+                        ], 
+                    ),
+                    html.Td(
+                        [
+                            html.Img(src=app.get_asset_url(f'brawler_icons/{club_team_brawlers[0]}.webp'), height='30px'),
+                            html.Img(src=app.get_asset_url(f'brawler_icons/{club_team_brawlers[1]}.webp'), height='30px'),
+                            html.Img(src=app.get_asset_url(f'brawler_icons/{club_team_brawlers[2]}.webp'), height='30px'),
+                        ], 
+                    ),
+                    html.Td(
+                        [
+                            html.Img(src=app.get_asset_url(f'brawler_icons/{opponents_brawlers[0]}.webp'), height='30px'),
+                            html.Img(src=app.get_asset_url(f'brawler_icons/{opponents_brawlers[1]}.webp'), height='30px'),
+                            html.Img(src=app.get_asset_url(f'brawler_icons/{opponents_brawlers[2]}.webp'), height='30px'),
+                        ], 
+                    ),
+                ],
+            )
+        )
+
+    table_body = [html.Tbody(rows)]
 
     table = dbc.Table(table_header + table_body, bordered=True)
+
 
     return (
         dbc.Container(
@@ -66,13 +138,11 @@ def serve_layout():
                         ),
                         dbc.Col(
                             [
-                                html.H5('Win Rates (coming soon...)'),
-                                html.Span('aegiman'),
-                                html.Img(src=app.get_asset_url('brawler_images/Shelly_Skin-Default.webp'), width='30px'),
+                                html.H5('Matchups'),
                                 table,
-                            ]
+                            ],
+                            width=8,
                         ),
-                        dbc.Col([html.H5('More fancy stuff...')]),
                     ],
                 ),
                 dcc.Store(

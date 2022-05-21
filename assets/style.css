@@ -16,10 +16,12 @@ td {
 }
 
 .selector {
-  width: 90px;
+  width: 80px;
 }
 
+/*
 #season_overview_table {
   max-height: calc(100vh - 98.398px - 34.193px - 54px - 15px - 94px - 15px);
   overflow: auto;
 }
+*/

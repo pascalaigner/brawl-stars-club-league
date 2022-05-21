@@ -32,6 +32,18 @@ def serve_layout():
         club_league_games_df = pd.read_sql('club_league_games', connection)
         # job_log_df = pd.read_sql('job_log', connection)
 
+    table_header = [
+        html.Thead(html.Tr([html.Th("First Name"), html.Th("Last Name")]))
+    ]
+
+    row1 = html.Tr([html.Td(html.Img(src=app.get_asset_url('brawler_images/Shelly_Skin-Default.webp'), height='50px'),), html.Td(html.Img(src=app.get_asset_url('brawler_images/Amber_Skin-Default.webp'), width='50px'),)])
+    row2 = html.Tr([html.Td([html.Img(src=app.get_asset_url('brawler_images/Jessie_Skin-Default.webp'), height='50px'),html.Img(src=app.get_asset_url('brawler_images/Shelly_Skin-Default.webp'), height='50px')]), html.Td(html.Img(src=app.get_asset_url('brawler_images/Amber_Skin-Default.webp'), width='30px'),)])
+    row3 = html.Tr([html.Td([html.Img(src=app.get_asset_url('brawler_images/Rosa_Skin-Default.webp'), height='50px'),html.Img(src=app.get_asset_url('brawler_images/Shelly_Skin-Default.webp'), height='50px')]), html.Td(html.Img(src=app.get_asset_url('brawler_images/Amber_Skin-Default.webp'), width='30px'),)])
+
+    table_body = [html.Tbody([row1, row2, row3])]
+
+    table = dbc.Table(table_header + table_body, bordered=True)
+
     return (
         dbc.Container(
             [
@@ -52,7 +64,14 @@ def serve_layout():
                             club_members_df,
                             club_league_games_df,
                         ),
-                        dbc.Col([html.H5('Win Rates (coming soon...)')]),
+                        dbc.Col(
+                            [
+                                html.H5('Win Rates (coming soon...)'),
+                                html.Span('aegiman'),
+                                html.Img(src=app.get_asset_url('brawler_images/Shelly_Skin-Default.webp'), width='30px'),
+                                table,
+                            ]
+                        ),
                         dbc.Col([html.H5('More fancy stuff...')]),
                     ],
                 ),

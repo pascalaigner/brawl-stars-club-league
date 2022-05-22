@@ -8,7 +8,8 @@ from sqlalchemy.pool import NullPool
 from callbacks.callback_render_season_overview import callback_render_season_overview
 from layout.serve_column_season_overview import serve_column_season_overview
 
-URI=config('URI')
+DATABASE_URL = config('DATABASE_URL')
+URI = DATABASE_URL[:8] + 'ql' + DATABASE_URL[8:]
 
 BS = 'https://cdn.jsdelivr.net/npm/bootswatch@4.5.2/dist/lux/bootstrap.min.css'
 app = Dash(

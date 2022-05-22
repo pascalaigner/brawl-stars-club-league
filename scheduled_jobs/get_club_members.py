@@ -6,9 +6,10 @@ import pandas as pd
 from sqlalchemy import create_engine
 from sqlalchemy.pool import NullPool
 
-API_TOKEN=config('API_TOKEN')
-FIXIE_URL=config('FIXIE_URL')
-URI=config('URI')
+API_TOKEN = config('API_TOKEN')
+DATABASE_URL = config('DATABASE_URL')
+FIXIE_URL = config('FIXIE_URL')
+URI = DATABASE_URL[:8] + 'ql' + DATABASE_URL[8:]
 
 date = datetime.utcnow()
 

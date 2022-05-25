@@ -15,7 +15,7 @@ URI = DATABASE_URL[:8] + 'ql' + DATABASE_URL[8:]
 
 date = datetime.utcnow()
 
-if True:
+if date.weekday() in [3, 5, 0]:
 
     headers = {
         'Authorization' : f'Bearer {API_TOKEN}',

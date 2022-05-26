@@ -28,7 +28,8 @@ if date.weekday() in [3, 5, 0]:
     engine = create_engine(URI, poolclass=NullPool)
     with engine.connect() as connection:
         club_members_df = pd.read_sql('club_members', connection)
-        club_members_list = club_members_df['player_tag'].to_list()
+        current_season = club_members_df['season'].unique()[-1]
+        club_members_list = club_members_df.query(f'season == "{current_season}"')['player_tag'].to_list()
         club_league_games_df = pd.read_sql('club_league_games', connection)
         club_league_games_list = club_league_games_df['game_timestamp'].to_list()
         

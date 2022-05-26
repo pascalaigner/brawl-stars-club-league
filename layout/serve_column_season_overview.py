@@ -22,7 +22,7 @@ def serve_column_season_overview(club_members_df, club_league_games_df):
                             id='season_selector',
                             class_name='selector',
                             options=seasons,
-                            value=seasons[0]['value'],
+                            value=seasons[-1]['value'],
                         ),
                     ],
                 ),

@@ -7,10 +7,10 @@ def get_season_overview(club_members_df, club_league_games_df, season, event_day
     else:
         club_league_games_df_filtered = club_league_games_df.query(f'season == "{season}" & \
                                                                      event_day == "{event_day}"')
-
+    
     season_overview_dict = {member['player_name'] : [0, 0, member['trophies']]
                             for member_index, member in club_members_df_filtered.iterrows()}
-    
+
     for game_index, game in club_league_games_df_filtered.iterrows():
         for n in range(1, 7):
             if game[f'player{n}_is_club_member']:
